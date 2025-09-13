@@ -14,68 +14,77 @@
     <link rel="icon" type="image/png" href="/images/favicon.png">
     <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
     
-    <!-- Tailwind CSS Local -->
-    <link rel="stylesheet" href="/css/tailwind.min.css">
+    <!-- Bulma CSS Framework -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style.css?v=2025091311">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-50 font-sans antialiased">
+<body class="has-background-light">
     <!-- Loading Screen -->
-    <div id="loading-screen" class="fixed inset-0 bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center z-50">
-        <div class="text-center text-white">
-            <div class="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
-            <p class="text-lg font-medium">Загрузка...</p>
+    <div id="loading-screen" class="hero is-fullheight has-background-primary" style="position: fixed; top: 0; left: 0; width: 100%; z-index: 9999;">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <div class="loader mb-4"></div>
+                <p class="title is-4 has-text-white">Загрузка...</p>
+            </div>
         </div>
     </div>
 
     <!-- Main App Container -->
-    <div id="app" class="min-h-screen" style="display: none;">
+    <div id="app" class="is-fullheight" style="display: none;">
         
         <!-- Authentication Screen -->
-        <div id="auth-screen" class="min-h-screen bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center px-4 py-8">
-            <div class="w-full max-w-md">
-                <!-- Logo Section -->
-                <div class="text-center mb-12">
-                    <div class="text-6xl mb-4">🚕</div>
-                    <h1 class="text-3xl font-bold text-white mb-2">Такси</h1>
-                    <p class="text-primary-100 text-lg">Приложение для водителей</p>
-                </div>
+        <div id="auth-screen" class="hero is-fullheight has-background-primary">
+            <div class="hero-body">
+                <div class="container">
+                    <!-- Logo Section -->
+                    <div class="has-text-centered mb-6">
+                        <div class="is-size-1 mb-4">🚕</div>
+                        <h1 class="title is-2 has-text-white mb-2">Такси</h1>
+                        <p class="subtitle is-5 has-text-white-ter">Приложение для водителей</p>
+                    </div>
 
-                <!-- Phone Input Step -->
-                <div id="phone-step" class="auth-step" style="display: block;">
-                    <div class="bg-white rounded-2xl shadow-2xl p-8">
-                        <h2 class="text-2xl font-semibold text-gray-900 mb-2">Войти в приложение</h2>
-                        <p class="text-gray-600 mb-8">Введите номер телефона</p>
-                        
-                        <form id="phone-form" class="space-y-6">
-                            <div>
-                                <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Номер телефона</label>
-                                <input type="tel" id="phone" 
-                                       class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-lg" 
-                                       placeholder="+7 (999) 999-99-99" required>
-                            </div>
+                    <!-- Phone Input Step -->
+                    <div id="phone-step" class="auth-step" style="display: block;">
+                        <div class="box">
+                            <h2 class="title is-4">Войти в приложение</h2>
+                            <p class="subtitle is-6 has-text-grey">Введите номер телефона</p>
                             
-                            <button type="submit" 
-                                    class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" 
-                                    disabled>
-                                <span class="btn-text">Получить код</span>
-                                <div class="btn-loader hidden ml-2">
-                                    <div class="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                            <form id="phone-form">
+                                <div class="field">
+                                    <label class="label">Номер телефона</label>
+                                    <div class="control">
+                                        <input class="input is-large" type="tel" id="phone" placeholder="+7 (999) 999-99-99" required>
+                                    </div>
                                 </div>
-                            </button>
-                        </form>
-                        
-                        <!-- Demo Info -->
-                        <div class="mt-6 p-4 bg-gray-50 rounded-lg">
-                            <p class="text-sm text-gray-600 font-medium mb-2">🧪 Демо-доступ:</p>
-                            <p class="text-sm text-gray-500">Телефон: <code class="bg-white px-2 py-1 rounded font-mono">+79991234567</code></p>
-                            <p class="text-sm text-gray-500">Код: <code class="bg-white px-2 py-1 rounded font-mono">1234</code></p>
+                                
+                                <div class="field">
+                                    <div class="control">
+                                        <button type="submit" class="button is-primary is-fullwidth is-large" disabled>
+                                            <span class="btn-text">Получить код</span>
+                                            <span class="btn-loader is-hidden">
+                                                <i class="fas fa-spinner fa-spin"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                            <!-- Demo Info -->
+                            <div class="notification is-info is-light mt-5">
+                                <p class="has-text-weight-semibold mb-2">🧪 Демо-доступ:</p>
+                                <p class="is-size-7">Телефон: <code class="has-background-white px-2 py-1">+79991234567</code></p>
+                                <p class="is-size-7">Код: <code class="has-background-white px-2 py-1">1234</code></p>
+                            </div>
                         </div>
                     </div>
                 </div>

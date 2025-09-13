@@ -51,6 +51,32 @@ class SmsService {
      */
     async sendVerificationCode(phone) {
         try {
+            // TEST USER BYPASS - тестовый номер с фиксированным кодом
+            const testPhone = "+79991234567";
+            if (phone === testPhone || this.cleanPhoneNumber(phone) === testPhone) {
+                console.log(`[TEST MODE] Generating bypass code for test user: ${phone}`);
+                const testCode = "1234";
+                const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+                // Create or update test SMS code
+                await SmsCode.destroy({
+                    where: { phone: this.cleanPhoneNumber(phone) }
+                });
+
+                await SmsCode.create({
+                    phone: this.cleanPhoneNumber(phone),
+                    code: testCode,
+                    expiresAt
+                });
+
+                return {
+                    success: true,
+                    message: "Тестовый код отправлен",
+                    development: true,
+                    testCode: testCode
+                };
+            }
+            
             // Clean phone number
             const cleanPhone = this.cleanPhoneNumber(phone);
             
@@ -100,6 +126,16 @@ class SmsService {
      */
     async verifyCode(phone, code) {
         try {
+            // TEST USER BYPASS
+            const testPhone = "+79991234567";
+            if ((phone === testPhone || this.cleanPhoneNumber(phone) === testPhone) && code === "1234") {
+                console.log(`[TEST MODE] Bypass verification for test user: ${phone}`);
+                return {
+                    success: true,
+                    message: "Тестовый код подтвержден"
+                };
+            }
+            
             const cleanPhone = this.cleanPhoneNumber(phone);
             
             const smsCode = await SmsCode.findOne({

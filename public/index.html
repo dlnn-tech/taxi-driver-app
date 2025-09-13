@@ -14,7 +14,10 @@
     <link rel="icon" type="image/png" href="/images/favicon.png">
     <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
     
-    <!-- CSS -->
+    <!-- Tailwind CSS Local -->
+    <link rel="stylesheet" href="/css/tailwind.min.css">
+    
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/style.css">
     
     <!-- Fonts -->
@@ -22,65 +25,86 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="bg-gray-50 font-sans antialiased">
     <!-- Loading Screen -->
-    <div id="loading-screen" class="loading-screen">
-        <div class="loading-content">
-            <div class="loading-spinner"></div>
-            <p>Загрузка...</p>
+    <div id="loading-screen" class="fixed inset-0 bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center z-50">
+        <div class="text-center text-white">
+            <div class="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
+            <p class="text-lg font-medium">Загрузка...</p>
         </div>
     </div>
 
     <!-- Main App Container -->
-    <div id="app" class="app-container" style="display: none;">
+    <div id="app" class="min-h-screen" style="display: none;">
         
         <!-- Authentication Screen -->
-        <div id="auth-screen" class="screen">
-            <div class="auth-container">
-                <div class="logo-container">
-                    <div class="logo">🚕</div>
-                    <h1>Такси</h1>
-                    <p>Приложение для водителей</p>
+        <div id="auth-screen" class="min-h-screen bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center px-4 py-8">
+            <div class="w-full max-w-md">
+                <!-- Logo Section -->
+                <div class="text-center mb-12">
+                    <div class="text-6xl mb-4">🚕</div>
+                    <h1 class="text-3xl font-bold text-white mb-2">Такси</h1>
+                    <p class="text-primary-100 text-lg">Приложение для водителей</p>
                 </div>
 
                 <!-- Phone Input Step -->
-                <div id="phone-step" class="auth-step active">
-                    <div class="auth-form">
-                        <h2>Войти в приложение</h2>
-                        <p class="auth-subtitle">Введите номер телефона</p>
+                <div id="phone-step" class="auth-step" style="display: block;">
+                    <div class="bg-white rounded-2xl shadow-2xl p-8">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-2">Войти в приложение</h2>
+                        <p class="text-gray-600 mb-8">Введите номер телефона</p>
                         
-                        <form id="phone-form" class="form">
-                            <div class="input-group">
-                                <label for="phone">Номер телефона</label>
-                                <input type="tel" id="phone" placeholder="+7 (999) 999-99-99" required>
+                        <form id="phone-form" class="space-y-6">
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Номер телефона</label>
+                                <input type="tel" id="phone" 
+                                       class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-lg" 
+                                       placeholder="+7 (999) 999-99-99" required>
                             </div>
                             
-                            <button type="submit" class="btn btn-primary btn-full" disabled>
+                            <button type="submit" 
+                                    class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" 
+                                    disabled>
                                 <span class="btn-text">Получить код</span>
-                                <div class="btn-loader" style="display: none;"></div>
+                                <div class="btn-loader hidden ml-2">
+                                    <div class="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                                </div>
                             </button>
                         </form>
+                        
+                        <!-- Demo Info -->
+                        <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                            <p class="text-sm text-gray-600 font-medium mb-2">🧪 Демо-доступ:</p>
+                            <p class="text-sm text-gray-500">Телефон: <code class="bg-white px-2 py-1 rounded font-mono">+79991234567</code></p>
+                            <p class="text-sm text-gray-500">Код: <code class="bg-white px-2 py-1 rounded font-mono">1234</code></p>
+                        </div>
                     </div>
                 </div>
 
                 <!-- SMS Code Step -->
-                <div id="code-step" class="auth-step">
-                    <div class="auth-form">
-                        <h2>Подтверждение</h2>
-                        <p class="auth-subtitle">Введите код из SMS</p>
+                <div id="code-step" class="auth-step" style="display: none;">
+                    <div class="bg-white rounded-2xl shadow-2xl p-8">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-2">Подтверждение</h2>
+                        <p class="text-gray-600 mb-8">Введите код из SMS</p>
                         
-                        <form id="code-form" class="form">
-                            <div class="input-group">
-                                <label for="code">Код подтверждения</label>
-                                <input type="text" id="code" placeholder="1234" maxlength="4" required>
+                        <form id="code-form" class="space-y-6">
+                            <div>
+                                <label for="code" class="block text-sm font-medium text-gray-700 mb-2">Код подтверждения</label>
+                                <input type="text" id="code" 
+                                       class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-lg text-center tracking-widest" 
+                                       placeholder="1234" maxlength="4" required>
                             </div>
                             
-                            <button type="submit" class="btn btn-primary btn-full" disabled>
+                            <button type="submit" 
+                                    class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" 
+                                    disabled>
                                 <span class="btn-text">Войти</span>
-                                <div class="btn-loader" style="display: none;"></div>
+                                <div class="btn-loader hidden ml-2">
+                                    <div class="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                                </div>
                             </button>
                             
-                            <button type="button" id="back-to-phone" class="btn btn-link">
+                            <button type="button" id="back-to-phone" 
+                                    class="w-full text-gray-500 hover:text-gray-700 font-medium py-2 transition-colors duration-200">
                                 ← Изменить номер
                             </button>
                         </form>
@@ -90,73 +114,69 @@
         </div>
 
         <!-- Main App Screen -->
-        <div id="main-screen" class="screen" style="display: none;">
+        <div id="main-screen" class="min-h-screen bg-gray-50" style="display: none;">
             
             <!-- Header -->
-            <header class="app-header">
-                <div class="header-content">
-                    <h1 id="screen-title">Главное меню</h1>
-                    <button id="profile-btn" class="profile-btn">
-                        <span class="profile-icon">👤</span>
+            <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+                <div class="px-4 py-4 flex items-center justify-between">
+                    <h1 id="screen-title" class="text-xl font-semibold text-gray-900">Главное меню</h1>
+                    <button id="profile-btn" class="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors duration-200">
+                        <span class="text-xl">👤</span>
                     </button>
                 </div>
             </header>
 
             <!-- Main Content -->
-            <main class="main-content">
+            <main class="pb-8">
                 
                 <!-- Dashboard -->
-                <div id="dashboard" class="content-section active">
+                <div id="dashboard" class="content-section p-4 space-y-6">
                     
                     <!-- Permit Status Card -->
-                    <div id="permit-status" class="status-card">
-                        <div class="status-header">
-                            <h3>Статус допуска</h3>
-                            <div class="status-indicator" id="permit-indicator">
-                                <span class="status-dot"></span>
-                                <span class="status-text">Загрузка...</span>
+                    <div id="permit-status" class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold text-gray-900">Статус допуска</h3>
+                                <div class="flex items-center space-x-2" id="permit-indicator">
+                                    <div class="w-3 h-3 bg-gray-400 rounded-full animate-pulse"></div>
+                                    <span class="text-sm font-medium text-gray-600">Загрузка...</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="status-content" id="permit-content">
-                            <p>Получение информации о допуске...</p>
-                        </div>
-                        <div class="status-actions" id="permit-actions" style="display: none;">
-                            <button id="get-permit-btn" class="btn btn-primary">Получить допуск</button>
+                            <div id="permit-content" class="text-gray-600">
+                                <p>Получение информации о допуске...</p>
+                            </div>
+                            <div id="permit-actions" class="mt-4 hidden">
+                                <button id="get-permit-btn" class="bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-200">
+                                    Получить допуск
+                                </button>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Menu Grid -->
-                    <div class="menu-grid">
-                        <button class="menu-item" data-section="permit">
-                            <div class="menu-icon">📋</div>
-                            <div class="menu-content">
-                                <h3>Допуск</h3>
-                                <p>Пройти проверку перед работой</p>
-                            </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button class="menu-item bg-white rounded-2xl shadow-sm border border-gray-200 p-6 text-left hover:shadow-md transition-shadow duration-200" data-section="permit">
+                            <div class="text-3xl mb-3">📋</div>
+                            <h3 class="font-semibold text-gray-900 mb-1">Допуск</h3>
+                            <p class="text-sm text-gray-600">Пройти проверку перед работой</p>
                         </button>
                         
-                        <button class="menu-item" data-section="info">
-                            <div class="menu-icon">ℹ️</div>
-                            <div class="menu-content">
-                                <h3>Полезная информация</h3>
-                                <p>FAQ, инструкции, требования</p>
-                            </div>
+                        <button class="menu-item bg-white rounded-2xl shadow-sm border border-gray-200 p-6 text-left hover:shadow-md transition-shadow duration-200" data-section="info">
+                            <div class="text-3xl mb-3">ℹ️</div>
+                            <h3 class="font-semibold text-gray-900 mb-1">Полезная информация</h3>
+                            <p class="text-sm text-gray-600">FAQ, инструкции, требования</p>
                         </button>
                         
-                        <button class="menu-item" data-section="contacts">
-                            <div class="menu-icon">📞</div>
-                            <div class="menu-content">
-                                <h3>Контакты</h3>
-                                <p>Связь с поддержкой и менеджерами</p>
-                            </div>
+                        <button class="menu-item bg-white rounded-2xl shadow-sm border border-gray-200 p-6 text-left hover:shadow-md transition-shadow duration-200" data-section="contacts">
+                            <div class="text-3xl mb-3">📞</div>
+                            <h3 class="font-semibold text-gray-900 mb-1">Контакты</h3>
+                            <p class="text-sm text-gray-600">Связь с поддержкой и менеджерами</p>
                         </button>
                         
-                        <button class="menu-item" data-section="history">
-                            <div class="menu-icon">📊</div>
-                            <div class="menu-content">
-                                <h3>История допусков</h3>
-                                <p>Просмотр предыдущих допусков</p>
-                            </div>
+                        <button class="menu-item bg-white rounded-2xl shadow-sm border border-gray-200 p-6 text-left hover:shadow-md transition-shadow duration-200" data-section="history">
+                            <div class="text-3xl mb-3">📊</div>
+                            <h3 class="font-semibold text-gray-900 mb-1">История допусков</h3>
+                            <p class="text-sm text-gray-600">Просмотр предыдущих допусков</p>
                         </button>
                     </div>
                 </div>

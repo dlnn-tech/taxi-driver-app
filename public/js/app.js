@@ -18,6 +18,12 @@ class TaxiDriverApp {
 
     async handleDOMReady() {
         try {
+            // Clear potentially corrupted auth data on fresh page load
+            if (window.authManager && window.authManager.clearStoredAuth) {
+                console.log('Clearing potentially stale auth data on startup');
+                window.authManager.clearStoredAuth();
+            }
+            
             // Hide loading screen after a short delay
             setTimeout(() => {
                 const loadingScreen = document.getElementById('loading-screen');

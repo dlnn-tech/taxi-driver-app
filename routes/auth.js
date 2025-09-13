@@ -2,7 +2,7 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const { Driver } = require('../models');
 const smsService = require('../services/smsService');
-const { generateToken } = require('../middleware/auth');
+const { generateToken, authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -146,7 +146,7 @@ router.post('/verify-code', authLimiter, async (req, res) => {
 });
 
 // Get current user info
-router.get('/me', require('../middleware/auth').authenticateToken, async (req, res) => {
+router.get('/me', authenticateToken, async (req, res) => {
     try {
         const driver = req.driver;
         
@@ -173,7 +173,7 @@ router.get('/me', require('../middleware/auth').authenticateToken, async (req, r
 });
 
 // Update driver profile
-router.put('/profile', require('../middleware/auth').authenticateToken, async (req, res) => {
+router.put('/profile', authenticateToken, async (req, res) => {
     try {
         const driver = req.driver;
         const { name, email, carNumber, carModel } = req.body;

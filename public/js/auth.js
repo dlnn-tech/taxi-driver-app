@@ -217,25 +217,32 @@ class AuthManager {
         }
 
         try {
+            // Set token first for the request
+            window.api?.setToken(token);
+            
             // Verify token is still valid
             const result = await window.api?.getCurrentUser();
             
-            if (result.success) {
+            if (result && result.success) {
                 this.isAuthenticated = true;
                 this.currentUser = result.driver;
-                window.api?.setToken(token);
                 
                 // Update stored user data
                 window.storage?.set('currentUser', this.currentUser);
                 
                 return true;
             } else {
+                console.log('Token invalid or expired, logging out');
                 this.logout();
                 return false;
             }
         } catch (error) {
             console.error('Auth check failed:', error);
-            this.logout();
+            // If it's a 401/403 error, clear auth data
+            if (error.message?.includes('токен') || error.message?.includes('401') || error.message?.includes('403')) {
+                console.log('Authentication error, clearing token');
+                this.logout();
+            }
             return false;
         }
     }
@@ -247,6 +254,7 @@ class AuthManager {
         
         window.api?.clearToken();
         window.storage?.remove('currentUser');
+        window.storage?.remove('authToken');
         
         // Show auth screen
         const authScreen = document.getElementById('auth-screen');
@@ -265,6 +273,24 @@ class AuthManager {
         if (codeForm) codeForm.reset();
         
         this.showPhoneStep();
+    }
+    
+    // Clear all stored authentication data
+    clearStoredAuth() {
+        if (window.storage) {
+            window.storage.remove('authToken');
+            window.storage.remove('currentUser');
+        }
+        
+        // Also clear from localStorage directly in case storage wrapper fails
+        try {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+        } catch (e) {
+            console.log('Failed to clear localStorage:', e);
+        }
+        
+        console.log('Cleared all stored authentication data');
     }
 
     getCurrentUser() {

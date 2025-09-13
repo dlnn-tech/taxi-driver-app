@@ -52,10 +52,20 @@ class PermitManager {
         const statusContent = document.getElementById('permit-content');
         const statusActions = document.getElementById('permit-actions');
         
-        if (!statusIndicator || !statusContent || !statusActions) return;
+        // If elements don't exist (e.g., on auth screen), skip update
+        if (!statusIndicator || !statusContent || !statusActions) {
+            console.log('Permit status elements not found, skipping update (probably on auth screen)');
+            return;
+        }
 
         const statusDot = statusIndicator.querySelector('.status-dot');
         const statusText = statusIndicator.querySelector('.status-text');
+        
+        // If status elements don't exist, skip update
+        if (!statusDot || !statusText) {
+            console.log('Status dot/text elements not found, skipping update');
+            return;
+        }
 
         if (this.currentPermit) {
             const permit = this.currentPermit;

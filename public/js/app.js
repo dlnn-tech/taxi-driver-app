@@ -30,7 +30,7 @@ class TaxiDriverApp {
             }, 1000);
 
             // Check authentication status
-            const isAuthenticated = await authManager.checkAuthStatus();
+            const isAuthenticated = await window.authManager.checkAuthStatus();
             
             if (isAuthenticated) {
                 this.initialize();
@@ -120,8 +120,15 @@ class TaxiDriverApp {
 
     async loadInitialData() {
         try {
+            // Only load data if user is authenticated and we have the main screen elements
+            const mainScreen = document.getElementById('main-screen');
+            if (!mainScreen || mainScreen.style.display === 'none') {
+                console.log('Main screen not visible, skipping initial data load');
+                return;
+            }
+            
             // Load permit status
-            await permitManager.loadCurrentPermit();
+            await window.permitManager.loadCurrentPermit();
             
             // Load other initial data as needed
             
@@ -188,7 +195,7 @@ class TaxiDriverApp {
         if (!contactsList) return;
 
         try {
-            const result = await api.getContacts();
+            const result = await window.api.getContacts();
             
             if (result.success && result.contacts) {
                 contactsList.innerHTML = result.contacts.map(contact => `

@@ -94,7 +94,7 @@ class AuthManager {
         setButtonLoading(submitBtn, true);
 
         try {
-            const result = await api.requestSMSCode(phone);
+            const result = await window.api.requestSMSCode(phone);
             
             if (result.success) {
                 this.currentPhone = phone;
@@ -134,16 +134,16 @@ class AuthManager {
         setButtonLoading(submitBtn, true);
 
         try {
-            const result = await api.verifySMSCode(this.currentPhone, code);
+            const result = await window.api.verifySMSCode(this.currentPhone, code);
             
             if (result.success) {
                 // Save token and user data
-                api.setToken(result.token);
+                window.api.setToken(result.token);
                 this.currentUser = result.driver;
                 this.isAuthenticated = true;
                 
                 // Save user data to localStorage
-                storage.set('currentUser', this.currentUser);
+                window.storage.set('currentUser', this.currentUser);
                 
                 showToast('Вход выполнен успешно!', 'success');
                 
@@ -208,8 +208,8 @@ class AuthManager {
     }
 
     async checkAuthStatus() {
-        const token = storage.get('authToken');
-        const userData = storage.get('currentUser');
+        const token = window.storage?.get('authToken');
+        const userData = window.storage?.get('currentUser');
         
         if (!token || !userData) {
             this.logout();
@@ -218,15 +218,15 @@ class AuthManager {
 
         try {
             // Verify token is still valid
-            const result = await api.getCurrentUser();
+            const result = await window.api?.getCurrentUser();
             
             if (result.success) {
                 this.isAuthenticated = true;
                 this.currentUser = result.driver;
-                api.setToken(token);
+                window.api?.setToken(token);
                 
                 // Update stored user data
-                storage.set('currentUser', this.currentUser);
+                window.storage?.set('currentUser', this.currentUser);
                 
                 return true;
             } else {
@@ -245,8 +245,8 @@ class AuthManager {
         this.currentUser = null;
         this.currentPhone = null;
         
-        api.clearToken();
-        storage.remove('currentUser');
+        window.api?.clearToken();
+        window.storage?.remove('currentUser');
         
         // Show auth screen
         const authScreen = document.getElementById('auth-screen');
@@ -276,5 +276,4 @@ class AuthManager {
     }
 }
 
-// Create global auth manager instance
-const authManager = new AuthManager();
+// AuthManager class - instances created in main app

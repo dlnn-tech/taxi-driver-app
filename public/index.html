@@ -274,17 +274,29 @@
     <script src="/js/app.js"></script>
     
     <script>
-        // Initialize global objects in correct order
-        const storage = new StorageManager();
-        const api = new APIClient();
-        api.init(storage); // Initialize API with storage
+        // Initialize global objects step by step to avoid dependency issues
+        let storage, api, authManager, permitManager, app;
         
-        // Now create managers that depend on api and storage
-        const authManager = new AuthManager();
-        const permitManager = new PermitManager();
-        const app = new TaxiDriverApp();
+        // Step 1: Create storage first
+        storage = new StorageManager();
         
-        console.log('All objects initialized successfully');
+        // Step 2: Create and initialize API
+        api = new APIClient();
+        api.init(storage);
+        
+        // Step 3: Create other managers (without initializing dependencies yet)
+        authManager = new AuthManager();
+        permitManager = new PermitManager();
+        app = new TaxiDriverApp();
+        
+        console.log('All objects created successfully');
+        
+        // Make objects globally available
+        window.storage = storage;
+        window.api = api;
+        window.authManager = authManager;
+        window.permitManager = permitManager;
+        window.app = app;
     </script>
 </body>
 </html>

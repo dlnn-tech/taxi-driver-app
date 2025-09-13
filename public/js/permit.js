@@ -27,7 +27,7 @@ class PermitManager {
 
     async loadCurrentPermit() {
         try {
-            const result = await api.getCurrentPermit();
+            const result = await window.api.getCurrentPermit();
             
             if (result.success) {
                 this.currentPermit = result.permit;

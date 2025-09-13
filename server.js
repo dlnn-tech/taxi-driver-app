@@ -11,6 +11,7 @@ const authRoutes = require('./routes/auth');
 const permitRoutes = require('./routes/permit');
 const infoRoutes = require('./routes/info');
 const contactRoutes = require('./routes/contact');
+const driverRoutes = require('./routes/driver');
 const { expirePermits } = require('./services/permitService');
 
 const app = express();
@@ -65,6 +66,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/permit', permitRoutes);
 app.use('/api/info', infoRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/driver', driverRoutes);
 
 // Serve frontend for all other routes (SPA support)
 app.get('*', (req, res) => {

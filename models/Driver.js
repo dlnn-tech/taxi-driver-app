@@ -46,6 +46,16 @@ const Driver = sequelize.define('Driver', {
     lastLogin: {
         type: DataTypes.DATE,
         allowNull: true
+    },
+    ordersEnabled: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        comment: 'Whether the driver is enabled for receiving orders'
+    },
+    lastStatusCheck: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        comment: 'Last time the order status was checked'
     }
 }, {
     tableName: 'drivers',

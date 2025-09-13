@@ -152,32 +152,72 @@
                 <!-- Dashboard -->
                 <div id="dashboard" class="content-section">
                     
-                    <!-- Permit Status Card -->
-                    <div id="permit-status" class="card mb-6">
-                        <div class="card-content">
-                            <div class="level">
-                                <div class="level-left">
-                                    <div class="level-item">
-                                        <h3 class="title is-5">Статус допуска</h3>
+                    <!-- Driver Status Cards -->
+                    <div class="columns">
+                        <!-- Order Status Card -->
+                        <div class="column">
+                            <div id="order-status" class="card mb-4">
+                                <div class="card-content">
+                                    <div class="level">
+                                        <div class="level-left">
+                                            <div class="level-item">
+                                                <span class="icon is-large has-text-info mr-3">
+                                                    <i class="fas fa-taxi fa-2x"></i>
+                                                </span>
+                                                <div>
+                                                    <h3 class="title is-6 mb-1">Статус заказов</h3>
+                                                    <div id="order-status-indicator">
+                                                        <span class="tag is-warning">
+                                                            <i class="fas fa-spinner fa-spin mr-1"></i>
+                                                            Проверка...
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="level-right">
-                                    <div class="level-item" id="permit-indicator">
-                                        <span class="icon has-text-grey">
-                                            <i class="fas fa-circle-notch fa-spin status-dot"></i>
-                                        </span>
-                                        <span class="has-text-grey is-size-7 ml-2 status-text">Загрузка...</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Permit Status Card -->
+                        <div class="column">
+                            <div id="permit-status" class="card mb-4">
+                                <div class="card-content">
+                                    <div class="level">
+                                        <div class="level-left">
+                                            <div class="level-item">
+                                                <span class="icon is-large has-text-primary mr-3">
+                                                    <i class="fas fa-clipboard-check fa-2x"></i>
+                                                </span>
+                                                <div>
+                                                    <h3 class="title is-6 mb-1">Статус допуска</h3>
+                                                    <div id="permit-indicator">
+                                                        <span class="tag is-light">
+                                                            <i class="fas fa-circle-notch fa-spin mr-1 status-dot"></i>
+                                                            <span class="status-text">Загрузка...</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div id="permit-content" class="content has-text-grey">
-                                <p>Получение информации о допуске...</p>
-                            </div>
-                            <div id="permit-actions" class="is-hidden">
-                                <button id="get-permit-btn" class="button is-primary is-medium">
-                                    Получить допуск
-                                </button>
-                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Action Button -->
+                    <div class="card mb-6">
+                        <div class="card-content has-text-centered">
+                            <h3 class="title is-5 mb-4">Отправка данных</h3>
+                            <p class="content mb-4">Отправьте свои данные для получения допуска к работе</p>
+                            <button id="submit-data-btn" class="button is-primary is-large">
+                                <span class="icon">
+                                    <i class="fas fa-paper-plane"></i>
+                                </span>
+                                <span>Отправить данные</span>
+                            </button>
                         </div>
                     </div>
 

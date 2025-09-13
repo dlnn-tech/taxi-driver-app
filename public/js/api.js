@@ -163,6 +163,11 @@ class APIClient {
     async getContactByType(type) {
         return this.request(`/contact/${type}`);
     }
+    
+    // Driver status endpoint
+    async getDriverStatus() {
+        return this.request('/driver/status');
+    }
 }
 
 // APIClient class - instances created in main app

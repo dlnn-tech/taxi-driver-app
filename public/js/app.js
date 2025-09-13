@@ -53,9 +53,6 @@ class TaxiDriverApp {
             this.initializeNavigation();
             this.initializeProfileButton();
             
-            // Load initial data
-            await this.loadInitialData();
-            
             // Show main app
             const authScreen = document.getElementById('auth-screen');
             const mainScreen = document.getElementById('main-screen');
@@ -64,6 +61,12 @@ class TaxiDriverApp {
                 authScreen.style.display = 'none';
                 mainScreen.style.display = 'block';
             }
+            
+            // Show dashboard by default
+            this.navigateToSection('dashboard');
+            
+            // Load initial data
+            await this.loadInitialData();
             
             this.isInitialized = true;
             console.log('App initialized successfully');
@@ -130,7 +133,11 @@ class TaxiDriverApp {
             // Load permit status
             await window.permitManager.loadCurrentPermit();
             
-            // Load other initial data as needed
+            // Load order status
+            await this.loadOrderStatus();
+            
+            // Initialize submit data button
+            this.initializeSubmitDataButton();
             
         } catch (error) {
             console.error('Failed to load initial data:', error);
@@ -415,54 +422,67 @@ class TaxiDriverApp {
         const user = authManager.getCurrentUser();
         if (!user) return;
 
-        // Create profile modal
+        // Create Bulma modal
         const modal = document.createElement('div');
-        modal.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: var(--spacing-lg);
+        modal.className = 'modal is-active';
+        modal.innerHTML = `
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">
+                        <span class="icon mr-2">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        Профиль
+                    </p>
+                    <button class="delete" id="close-profile-modal" aria-label="close"></button>
+                </header>
+                <section class="modal-card-body">
+                    <div class="has-text-centered mb-5">
+                        <span class="icon is-large has-text-primary mb-3">
+                            <i class="fas fa-user-circle fa-3x"></i>
+                        </span>
+                        <h3 class="title is-4">${user.name || 'Водитель'}</h3>
+                        <p class="subtitle is-6 has-text-grey">${user.phone}</p>
+                    </div>
+                    
+                    <div class="content">
+                        ${user.carNumber ? `
+                            <div class="field">
+                                <label class="label">Автомобиль</label>
+                                <p class="control">
+                                    <span class="tag is-light is-medium">
+                                        <i class="fas fa-car mr-2"></i>
+                                        ${user.carModel || ''} ${user.carNumber}
+                                    </span>
+                                </p>
+                            </div>
+                        ` : ''}
+                        ${user.email ? `
+                            <div class="field">
+                                <label class="label">Email</label>
+                                <p class="control">
+                                    <span class="tag is-light is-medium">
+                                        <i class="fas fa-envelope mr-2"></i>
+                                        ${user.email}
+                                    </span>
+                                </p>
+                            </div>
+                        ` : ''}
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                    <button id="logout-btn" class="button is-danger">
+                        <span class="icon">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </span>
+                        <span>Выйти</span>
+                    </button>
+                    <button id="cancel-profile-btn" class="button">Отмена</button>
+                </footer>
+            </div>
         `;
 
-        const modalContent = document.createElement('div');
-        modalContent.style.cssText = `
-            background: var(--surface-color);
-            border-radius: var(--radius-lg);
-            padding: var(--spacing-xl);
-            max-width: 400px;
-            width: 100%;
-        `;
-
-        modalContent.innerHTML = `
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-lg);">
-                <h2>Профиль</h2>
-                <button id="close-profile-modal" style="background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
-            </div>
-            
-            <div style="text-align: center; margin-bottom: var(--spacing-lg);">
-                <div style="font-size: 48px; margin-bottom: var(--spacing-md);">👤</div>
-                <h3>${user.name || 'Водитель'}</h3>
-                <p style="color: var(--text-secondary);">${user.phone}</p>
-            </div>
-            
-            <div style="margin-bottom: var(--spacing-lg);">
-                ${user.carNumber ? `<p><strong>Автомобиль:</strong> ${user.carModel || ''} ${user.carNumber}</p>` : ''}
-                ${user.email ? `<p><strong>Email:</strong> ${user.email}</p>` : ''}
-            </div>
-            
-            <div style="text-align: center;">
-                <button id="logout-btn" class="btn btn-secondary">Выйти</button>
-            </div>
-        `;
-
-        modal.appendChild(modalContent);
         document.body.appendChild(modal);
 
         // Event handlers
@@ -473,20 +493,58 @@ class TaxiDriverApp {
         };
 
         document.getElementById('close-profile-modal').addEventListener('click', closeModal);
+        document.getElementById('cancel-profile-btn').addEventListener('click', closeModal);
         document.getElementById('logout-btn').addEventListener('click', () => {
             closeModal();
-            authManager.logout();
+            window.authManager.logout();
         });
         
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal();
-        });
-
-        // Animate in
-        modal.style.opacity = '0';
-        requestAnimationFrame(() => {
-            modal.style.transition = 'opacity 0.3s ease-out';
-            modal.style.opacity = '1';
+        // Close on background click
+        modal.querySelector('.modal-background').addEventListener('click', closeModal);
+    }
+    
+    async loadOrderStatus() {
+        const orderStatusIndicator = document.getElementById('order-status-indicator');
+        if (!orderStatusIndicator) return;
+        
+        try {
+            const result = await window.api.getDriverStatus();
+            
+            if (result.success && result.status) {
+                const isEnabled = result.status.ordersEnabled;
+                
+                orderStatusIndicator.innerHTML = isEnabled 
+                    ? `<span class="tag is-success">
+                        <i class="fas fa-check-circle mr-1"></i>
+                        Подключен к заказам
+                       </span>`
+                    : `<span class="tag is-danger">
+                        <i class="fas fa-times-circle mr-1"></i>
+                        Отключен от заказов
+                       </span>`;
+            } else {
+                orderStatusIndicator.innerHTML = `
+                    <span class="tag is-light">
+                        <i class="fas fa-question-circle mr-1"></i>
+                        Статус неизвестен
+                    </span>`;
+            }
+        } catch (error) {
+            console.error('Failed to load order status:', error);
+            orderStatusIndicator.innerHTML = `
+                <span class="tag is-danger">
+                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                    Ошибка загрузки
+                </span>`;
+        }
+    }
+    
+    initializeSubmitDataButton() {
+        const submitBtn = document.getElementById('submit-data-btn');
+        if (!submitBtn) return;
+        
+        submitBtn.addEventListener('click', () => {
+            this.navigateToSection('permit');
         });
     }
 }

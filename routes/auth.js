@@ -29,6 +29,7 @@ const smsLimiter = rateLimit({
 router.post('/request-code', smsLimiter, async (req, res) => {
     try {
         const { phone } = req.body;
+        console.log('Request SMS code for phone:', phone);
 
         if (!phone) {
             return res.status(400).json({
@@ -39,9 +40,22 @@ router.post('/request-code', smsLimiter, async (req, res) => {
 
         // Clean phone number
         const cleanPhone = smsService.cleanPhoneNumber(phone);
+        console.log('Cleaned phone:', cleanPhone);
 
+        // Special handling for test phone in development
+        if (process.env.NODE_ENV === 'development' && cleanPhone === '+79991234567') {
+            console.log('[DEV MODE] Test phone detected, bypassing driver check');
+            return res.json({
+                success: true,
+                message: 'Код подтверждения отправлен',
+                development: true,
+                testCode: '1234'
+            });
+        }
+        
         // Check if driver exists
         const driver = await Driver.findOne({ where: { phone: cleanPhone } });
+        console.log('Driver found:', driver ? { id: driver.id, phone: driver.phone, isActive: driver.isActive } : 'not found');
         
         if (!driver) {
             return res.status(404).json({
@@ -59,6 +73,7 @@ router.post('/request-code', smsLimiter, async (req, res) => {
 
         // Send verification code
         const result = await smsService.sendVerificationCode(cleanPhone);
+        console.log('SMS service result:', result);
 
         if (result.success) {
             res.json({
@@ -75,9 +90,16 @@ router.post('/request-code', smsLimiter, async (req, res) => {
 
     } catch (error) {
         console.error('Request code error:', error);
+        console.error('Error stack:', error.stack);
+        console.error('Error details:', {
+            name: error.name,
+            message: error.message,
+            code: error.code
+        });
         res.status(500).json({
             success: false,
-            message: 'Внутренняя ошибка сервера'
+            message: 'Внутренняя ошибка сервера',
+            ...(process.env.NODE_ENV === 'development' && { error: error.message })
         });
     }
 });
@@ -86,6 +108,7 @@ router.post('/request-code', smsLimiter, async (req, res) => {
 router.post('/verify-code', authLimiter, async (req, res) => {
     try {
         const { phone, code } = req.body;
+        console.log('Verify code for phone:', phone, 'code:', code);
 
         if (!phone || !code) {
             return res.status(400).json({
@@ -95,6 +118,47 @@ router.post('/verify-code', authLimiter, async (req, res) => {
         }
 
         const cleanPhone = smsService.cleanPhoneNumber(phone);
+        console.log('Cleaned phone for verification:', cleanPhone);
+        
+        // Special handling for test phone in development
+        if (process.env.NODE_ENV === 'development' && cleanPhone === '+79991234567' && code === '1234') {
+            console.log('[DEV MODE] Test credentials, creating/finding test driver');
+            
+            let driver = await Driver.findOne({ where: { phone: cleanPhone } });
+            
+            if (!driver) {
+                // Create test driver if doesn't exist
+                driver = await Driver.create({
+                    phone: cleanPhone,
+                    name: 'Демо Водитель',
+                    carModel: 'Hyundai Solaris',
+                    carNumber: 'А123БВ77',
+                    isActive: true,
+                    ordersEnabled: false
+                });
+                console.log('[DEV MODE] Created test driver:', driver.id);
+            }
+            
+            // Update last login
+            await driver.update({ lastLogin: new Date() });
+            
+            // Generate JWT token
+            const token = generateToken(driver.id);
+            
+            return res.json({
+                success: true,
+                message: 'Успешная авторизация',
+                token,
+                driver: {
+                    id: driver.id,
+                    phone: driver.phone,
+                    name: driver.name,
+                    email: driver.email,
+                    carNumber: driver.carNumber,
+                    carModel: driver.carModel
+                }
+            });
+        }
 
         // Verify SMS code
         const codeResult = await smsService.verifyCode(cleanPhone, code);

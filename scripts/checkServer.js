@@ -82,11 +82,11 @@ async function checkServer() {
         'express',
         'sequelize',
         'jsonwebtoken',
-        'bcryptjs',
         'cors',
         'helmet',
         'dotenv',
-        'express-rate-limit'
+        'express-rate-limit',
+        'mysql2'
     ];
     
     for (const module of modules) {

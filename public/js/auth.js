@@ -165,8 +165,8 @@ class AuthManager {
         const codeStep = document.getElementById('code-step');
         
         if (phoneStep && codeStep) {
-            phoneStep.classList.add('active');
-            codeStep.classList.remove('active');
+            phoneStep.style.display = 'block';
+            codeStep.style.display = 'none';
         }
         
         // Clear code input
@@ -181,8 +181,8 @@ class AuthManager {
         const codeStep = document.getElementById('code-step');
         
         if (phoneStep && codeStep) {
-            phoneStep.classList.remove('active');
-            codeStep.classList.add('active');
+            phoneStep.style.display = 'none';
+            codeStep.style.display = 'block';
             
             // Focus on code input
             const codeInput = document.getElementById('code');

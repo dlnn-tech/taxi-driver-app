@@ -138,12 +138,14 @@ function setButtonLoading(button, isLoading) {
     
     if (isLoading) {
         button.disabled = true;
-        if (textElement) textElement.style.display = 'none';
-        if (loaderElement) loaderElement.style.display = 'block';
+        button.classList.add('is-loading');
+        if (textElement) textElement.classList.add('is-hidden');
+        if (loaderElement) loaderElement.classList.remove('is-hidden');
     } else {
         button.disabled = false;
-        if (textElement) textElement.style.display = 'block';
-        if (loaderElement) loaderElement.style.display = 'none';
+        button.classList.remove('is-loading');
+        if (textElement) textElement.classList.remove('is-hidden');
+        if (loaderElement) loaderElement.classList.add('is-hidden');
     }
 }
 

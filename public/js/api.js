@@ -1,9 +1,16 @@
 // API client for the taxi driver app
 
-class API {
+class APIClient {
     constructor() {
         this.baseURL = '/api';
-        this.token = storage.get('authToken');
+        this.token = null;
+        this.storage = null;
+    }
+
+    // Initialize with storage instance
+    init(storage) {
+        this.storage = storage;
+        this.token = this.storage.get('authToken');
     }
 
     /**
@@ -57,7 +64,9 @@ class API {
      */
     setToken(token) {
         this.token = token;
-        storage.set('authToken', token);
+        if (this.storage) {
+            this.storage.set('authToken', token);
+        }
     }
 
     /**
@@ -65,7 +74,9 @@ class API {
      */
     clearToken() {
         this.token = null;
-        storage.remove('authToken');
+        if (this.storage) {
+            this.storage.remove('authToken');
+        }
     }
 
     // Authentication endpoints
@@ -154,5 +165,4 @@ class API {
     }
 }
 
-// Create global API instance
-const api = new API();
+// APIClient class - instances created in main app

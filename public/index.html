@@ -274,12 +274,17 @@
     <script src="/js/app.js"></script>
     
     <script>
-        // Initialize global objects
+        // Initialize global objects in correct order
         const storage = new StorageManager();
         const api = new APIClient();
+        api.init(storage); // Initialize API with storage
+        
+        // Now create managers that depend on api and storage
         const authManager = new AuthManager();
         const permitManager = new PermitManager();
         const app = new TaxiDriverApp();
+        
+        console.log('All objects initialized successfully');
     </script>
 </body>
 </html>

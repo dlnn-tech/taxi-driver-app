@@ -1,0 +1,132 @@
+/* Custom styles to complement Bulma CSS */
+
+/* Clickable cards */
+.is-clickable {
+    cursor: pointer;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.is-clickable:hover {
+    box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(138, 43, 226, 0.2);
+    transform: translateY(-1px);
+}
+
+/* Status dot animation */
+.status-dot {
+    animation: pulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    from { opacity: 1; }
+    to { opacity: 0.5; }
+}
+
+/* Hidden content sections */
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+/* Menu items spacing */
+.menu-item .card-content {
+    padding: 1.5rem 1.25rem;
+}
+
+/* Back button spacing */
+.back-btn {
+    margin-bottom: 1rem !important;
+}
+
+/* Profile button styling */
+#profile-btn {
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+/* Custom primary color to match the purple theme */
+.has-background-primary {
+    background-color: #8a2be2 !important;
+}
+
+.button.is-primary {
+    background-color: #8a2be2;
+    border-color: transparent;
+    color: #fff;
+}
+
+.button.is-primary:hover {
+    background-color: #7b27d1;
+    border-color: transparent;
+    color: #fff;
+}
+
+.has-text-primary {
+    color: #8a2be2 !important;
+}
+
+/* Ensure full height */
+.is-fullheight {
+    min-height: 100vh;
+}
+
+/* Navbar box shadow */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+/* Auth step styling */
+.auth-step {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Toast container positioning */
+#toast-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.toast {
+    background: #333;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    max-width: 300px;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast.success {
+    background: #48c774;
+}
+
+.toast.error {
+    background: #f14668;
+}
+
+.toast.info {
+    background: #3298dc;
+}
+
+.toast.warning {
+    background: #ffdd57;
+    color: #333;
+}

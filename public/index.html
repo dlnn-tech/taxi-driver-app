@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/style.css?v=2025091311">
+    <link rel="stylesheet" href="/css/custom.css">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -128,39 +128,53 @@
         </div>
 
         <!-- Main App Screen -->
-        <div id="main-screen" class="min-h-screen bg-gray-50" style="display: none;">
+        <div id="main-screen" class="is-fullheight has-background-light" style="display: none;">
             
             <!-- Header -->
-            <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
-                <div class="px-4 py-4 flex items-center justify-between">
-                    <h1 id="screen-title" class="text-xl font-semibold text-gray-900">Главное меню</h1>
-                    <button id="profile-btn" class="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors duration-200">
-                        <span class="text-xl">👤</span>
-                    </button>
+            <nav class="navbar is-white" style="box-shadow: 0 2px 4px rgba(0,0,0,.1);">
+                <div class="navbar-brand">
+                    <h1 id="screen-title" class="navbar-item title is-4 mb-0">Главное меню</h1>
                 </div>
-            </header>
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <button id="profile-btn" class="button is-light is-rounded">
+                            <span class="icon is-small">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </nav>
 
             <!-- Main Content -->
-            <main class="pb-8">
+            <section class="section">
                 
                 <!-- Dashboard -->
-                <div id="dashboard" class="content-section p-4 space-y-6">
+                <div id="dashboard" class="content-section">
                     
                     <!-- Permit Status Card -->
-                    <div id="permit-status" class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                        <div class="p-6">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-lg font-semibold text-gray-900">Статус допуска</h3>
-                                <div class="flex items-center space-x-2" id="permit-indicator">
-                                    <div class="w-3 h-3 bg-gray-400 rounded-full animate-pulse"></div>
-                                    <span class="text-sm font-medium text-gray-600">Загрузка...</span>
+                    <div id="permit-status" class="card mb-6">
+                        <div class="card-content">
+                            <div class="level">
+                                <div class="level-left">
+                                    <div class="level-item">
+                                        <h3 class="title is-5">Статус допуска</h3>
+                                    </div>
+                                </div>
+                                <div class="level-right">
+                                    <div class="level-item" id="permit-indicator">
+                                        <span class="icon has-text-grey">
+                                            <i class="fas fa-circle-notch fa-spin status-dot"></i>
+                                        </span>
+                                        <span class="has-text-grey is-size-7 ml-2 status-text">Загрузка...</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div id="permit-content" class="text-gray-600">
+                            <div id="permit-content" class="content has-text-grey">
                                 <p>Получение информации о допуске...</p>
                             </div>
-                            <div id="permit-actions" class="mt-4 hidden">
-                                <button id="get-permit-btn" class="bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-200">
+                            <div id="permit-actions" class="is-hidden">
+                                <button id="get-permit-btn" class="button is-primary is-medium">
                                     Получить допуск
                                 </button>
                             </div>
@@ -168,37 +182,64 @@
                     </div>
 
                     <!-- Menu Grid -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <button class="menu-item bg-white rounded-2xl shadow-sm border border-gray-200 p-6 text-left hover:shadow-md transition-shadow duration-200" data-section="permit">
-                            <div class="text-3xl mb-3">📋</div>
-                            <h3 class="font-semibold text-gray-900 mb-1">Допуск</h3>
-                            <p class="text-sm text-gray-600">Пройти проверку перед работой</p>
-                        </button>
+                    <div class="columns is-multiline">
+                        <div class="column is-half">
+                            <div class="card is-clickable menu-item" data-section="permit">
+                                <div class="card-content has-text-left">
+                                    <span class="icon is-large has-text-primary">
+                                        <i class="fas fa-clipboard-list fa-2x"></i>
+                                    </span>
+                                    <h3 class="title is-6 mt-2 mb-1">Допуск</h3>
+                                    <p class="is-size-7 has-text-grey">Пройти проверку перед работой</p>
+                                </div>
+                            </div>
+                        </div>
                         
-                        <button class="menu-item bg-white rounded-2xl shadow-sm border border-gray-200 p-6 text-left hover:shadow-md transition-shadow duration-200" data-section="info">
-                            <div class="text-3xl mb-3">ℹ️</div>
-                            <h3 class="font-semibold text-gray-900 mb-1">Полезная информация</h3>
-                            <p class="text-sm text-gray-600">FAQ, инструкции, требования</p>
-                        </button>
+                        <div class="column is-half">
+                            <div class="card is-clickable menu-item" data-section="info">
+                                <div class="card-content has-text-left">
+                                    <span class="icon is-large has-text-info">
+                                        <i class="fas fa-info-circle fa-2x"></i>
+                                    </span>
+                                    <h3 class="title is-6 mt-2 mb-1">Полезная информация</h3>
+                                    <p class="is-size-7 has-text-grey">FAQ, инструкции, требования</p>
+                                </div>
+                            </div>
+                        </div>
                         
-                        <button class="menu-item bg-white rounded-2xl shadow-sm border border-gray-200 p-6 text-left hover:shadow-md transition-shadow duration-200" data-section="contacts">
-                            <div class="text-3xl mb-3">📞</div>
-                            <h3 class="font-semibold text-gray-900 mb-1">Контакты</h3>
-                            <p class="text-sm text-gray-600">Связь с поддержкой и менеджерами</p>
-                        </button>
+                        <div class="column is-half">
+                            <div class="card is-clickable menu-item" data-section="contacts">
+                                <div class="card-content has-text-left">
+                                    <span class="icon is-large has-text-link">
+                                        <i class="fas fa-phone fa-2x"></i>
+                                    </span>
+                                    <h3 class="title is-6 mt-2 mb-1">Контакты</h3>
+                                    <p class="is-size-7 has-text-grey">Связь с поддержкой и менеджерами</p>
+                                </div>
+                            </div>
+                        </div>
                         
-                        <button class="menu-item bg-white rounded-2xl shadow-sm border border-gray-200 p-6 text-left hover:shadow-md transition-shadow duration-200" data-section="history">
-                            <div class="text-3xl mb-3">📊</div>
-                            <h3 class="font-semibold text-gray-900 mb-1">История допусков</h3>
-                            <p class="text-sm text-gray-600">Просмотр предыдущих допусков</p>
-                        </button>
+                        <div class="column is-half">
+                            <div class="card is-clickable menu-item" data-section="history">
+                                <div class="card-content has-text-left">
+                                    <span class="icon is-large has-text-warning">
+                                        <i class="fas fa-chart-bar fa-2x"></i>
+                                    </span>
+                                    <h3 class="title is-6 mt-2 mb-1">История допусков</h3>
+                                    <p class="is-size-7 has-text-grey">Просмотр предыдущих допусков</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Permit Section -->
                 <div id="permit" class="content-section">
-                    <button class="back-btn" data-target="dashboard">← Назад</button>
-                    <h2>Допуск</h2>
+                    <button class="button is-light back-btn mb-4" data-target="dashboard">
+                        <span class="icon"><i class="fas fa-arrow-left"></i></span>
+                        <span>Назад</span>
+                    </button>
+                    <h2 class="title is-4">Допуск</h2>
                     
                     <div id="permit-content-container">
                         <!-- Content will be loaded dynamically -->
@@ -207,40 +248,76 @@
 
                 <!-- Info Section -->
                 <div id="info" class="content-section">
-                    <button class="back-btn" data-target="dashboard">← Назад</button>
-                    <h2>Полезная информация</h2>
+                    <button class="button is-light back-btn mb-4" data-target="dashboard">
+                        <span class="icon"><i class="fas fa-arrow-left"></i></span>
+                        <span>Назад</span>
+                    </button>
+                    <h2 class="title is-4">Полезная информация</h2>
                     
                     <div class="info-menu">
-                        <button class="info-item" data-info="faq">
-                            <span>❓</span>
-                            <div>
-                                <h3>Часто задаваемые вопросы</h3>
-                                <p>Ответы на популярные вопросы</p>
+                        <div class="card mb-3 is-clickable info-item" data-info="faq">
+                            <div class="card-content">
+                                <div class="level">
+                                    <div class="level-left">
+                                        <div class="level-item">
+                                            <span class="icon is-large has-text-warning mr-3">
+                                                <i class="fas fa-question-circle fa-2x"></i>
+                                            </span>
+                                            <div>
+                                                <h3 class="title is-6 mb-1">Часто задаваемые вопросы</h3>
+                                                <p class="is-size-7 has-text-grey">Ответы на популярные вопросы</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </button>
+                        </div>
                         
-                        <button class="info-item" data-info="instructions">
-                            <span>📖</span>
-                            <div>
-                                <h3>Инструкции</h3>
-                                <p>Пошаговое руководство</p>
+                        <div class="card mb-3 is-clickable info-item" data-info="instructions">
+                            <div class="card-content">
+                                <div class="level">
+                                    <div class="level-left">
+                                        <div class="level-item">
+                                            <span class="icon is-large has-text-info mr-3">
+                                                <i class="fas fa-book fa-2x"></i>
+                                            </span>
+                                            <div>
+                                                <h3 class="title is-6 mb-1">Инструкции</h3>
+                                                <p class="is-size-7 has-text-grey">Пошаговое руководство</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </button>
+                        </div>
                         
-                        <button class="info-item" data-info="safety">
-                            <span>⚠️</span>
-                            <div>
-                                <h3>Требования безопасности</h3>
-                                <p>Правила и требования</p>
+                        <div class="card mb-3 is-clickable info-item" data-info="safety">
+                            <div class="card-content">
+                                <div class="level">
+                                    <div class="level-left">
+                                        <div class="level-item">
+                                            <span class="icon is-large has-text-danger mr-3">
+                                                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                                            </span>
+                                            <div>
+                                                <h3 class="title is-6 mb-1">Требования безопасности</h3>
+                                                <p class="is-size-7 has-text-grey">Правила и требования</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </button>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Contacts Section -->
                 <div id="contacts" class="content-section">
-                    <button class="back-btn" data-target="dashboard">← Назад</button>
-                    <h2>Контакты</h2>
+                    <button class="button is-light back-btn mb-4" data-target="dashboard">
+                        <span class="icon"><i class="fas fa-arrow-left"></i></span>
+                        <span>Назад</span>
+                    </button>
+                    <h2 class="title is-4">Контакты</h2>
                     
                     <div id="contacts-list" class="contacts-list">
                         <!-- Contacts will be loaded dynamically -->
@@ -249,15 +326,18 @@
 
                 <!-- History Section -->
                 <div id="history" class="content-section">
-                    <button class="back-btn" data-target="dashboard">← Назад</button>
-                    <h2>История допусков</h2>
+                    <button class="button is-light back-btn mb-4" data-target="dashboard">
+                        <span class="icon"><i class="fas fa-arrow-left"></i></span>
+                        <span>Назад</span>
+                    </button>
+                    <h2 class="title is-4">История допусков</h2>
                     
                     <div id="history-list" class="history-list">
                         <!-- History will be loaded dynamically -->
                     </div>
                 </div>
 
-            </main>
+            </section>
         </div>
 
     </div>

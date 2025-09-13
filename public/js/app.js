@@ -393,7 +393,9 @@ class TaxiDriverApp {
 
         // Close modal handlers
         const closeModal = () => {
-            document.body.removeChild(modal);
+            if (modal && modal.parentNode) {
+                document.body.removeChild(modal);
+            }
         };
 
         document.getElementById('close-modal').addEventListener('click', closeModal);
@@ -465,7 +467,9 @@ class TaxiDriverApp {
 
         // Event handlers
         const closeModal = () => {
-            document.body.removeChild(modal);
+            if (modal && modal.parentNode) {
+                document.body.removeChild(modal);
+            }
         };
 
         document.getElementById('close-profile-modal').addEventListener('click', closeModal);

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Такси - Приложение для водителей</title>
+    
+    <!-- Meta tags for mobile -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Загрузка...</p>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-container" style="display: none;">
+        
+        <!-- Authentication Screen -->
+        <div id="auth-screen" class="screen">
+            <div class="auth-container">
+                <div class="logo-container">
+                    <div class="logo">🚕</div>
+                    <h1>Такси</h1>
+                    <p>Приложение для водителей</p>
+                </div>
+
+                <!-- Phone Input Step -->
+                <div id="phone-step" class="auth-step active">
+                    <div class="auth-form">
+                        <h2>Войти в приложение</h2>
+                        <p class="auth-subtitle">Введите номер телефона</p>
+                        
+                        <form id="phone-form" class="form">
+                            <div class="input-group">
+                                <label for="phone">Номер телефона</label>
+                                <input type="tel" id="phone" placeholder="+7 (999) 999-99-99" required>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-full" disabled>
+                                <span class="btn-text">Получить код</span>
+                                <div class="btn-loader" style="display: none;"></div>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- SMS Code Step -->
+                <div id="code-step" class="auth-step">
+                    <div class="auth-form">
+                        <h2>Подтверждение</h2>
+                        <p class="auth-subtitle">Введите код из SMS</p>
+                        
+                        <form id="code-form" class="form">
+                            <div class="input-group">
+                                <label for="code">Код подтверждения</label>
+                                <input type="text" id="code" placeholder="1234" maxlength="4" required>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-full" disabled>
+                                <span class="btn-text">Войти</span>
+                                <div class="btn-loader" style="display: none;"></div>
+                            </button>
+                            
+                            <button type="button" id="back-to-phone" class="btn btn-link">
+                                ← Изменить номер
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App Screen -->
+        <div id="main-screen" class="screen" style="display: none;">
+            
+            <!-- Header -->
+            <header class="app-header">
+                <div class="header-content">
+                    <h1 id="screen-title">Главное меню</h1>
+                    <button id="profile-btn" class="profile-btn">
+                        <span class="profile-icon">👤</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                
+                <!-- Dashboard -->
+                <div id="dashboard" class="content-section active">
+                    
+                    <!-- Permit Status Card -->
+                    <div id="permit-status" class="status-card">
+                        <div class="status-header">
+                            <h3>Статус допуска</h3>
+                            <div class="status-indicator" id="permit-indicator">
+                                <span class="status-dot"></span>
+                                <span class="status-text">Загрузка...</span>
+                            </div>
+                        </div>
+                        <div class="status-content" id="permit-content">
+                            <p>Получение информации о допуске...</p>
+                        </div>
+                        <div class="status-actions" id="permit-actions" style="display: none;">
+                            <button id="get-permit-btn" class="btn btn-primary">Получить допуск</button>
+                        </div>
+                    </div>
+
+                    <!-- Menu Grid -->
+                    <div class="menu-grid">
+                        <button class="menu-item" data-section="permit">
+                            <div class="menu-icon">📋</div>
+                            <div class="menu-content">
+                                <h3>Допуск</h3>
+                                <p>Пройти проверку перед работой</p>
+                            </div>
+                        </button>
+                        
+                        <button class="menu-item" data-section="info">
+                            <div class="menu-icon">ℹ️</div>
+                            <div class="menu-content">
+                                <h3>Полезная информация</h3>
+                                <p>FAQ, инструкции, требования</p>
+                            </div>
+                        </button>
+                        
+                        <button class="menu-item" data-section="contacts">
+                            <div class="menu-icon">📞</div>
+                            <div class="menu-content">
+                                <h3>Контакты</h3>
+                                <p>Связь с поддержкой и менеджерами</p>
+                            </div>
+                        </button>
+                        
+                        <button class="menu-item" data-section="history">
+                            <div class="menu-icon">📊</div>
+                            <div class="menu-content">
+                                <h3>История допусков</h3>
+                                <p>Просмотр предыдущих допусков</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Permit Section -->
+                <div id="permit" class="content-section">
+                    <button class="back-btn" data-target="dashboard">← Назад</button>
+                    <h2>Допуск</h2>
+                    
+                    <div id="permit-content-container">
+                        <!-- Content will be loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Info Section -->
+                <div id="info" class="content-section">
+                    <button class="back-btn" data-target="dashboard">← Назад</button>
+                    <h2>Полезная информация</h2>
+                    
+                    <div class="info-menu">
+                        <button class="info-item" data-info="faq">
+                            <span>❓</span>
+                            <div>
+                                <h3>Часто задаваемые вопросы</h3>
+                                <p>Ответы на популярные вопросы</p>
+                            </div>
+                        </button>
+                        
+                        <button class="info-item" data-info="instructions">
+                            <span>📖</span>
+                            <div>
+                                <h3>Инструкции</h3>
+                                <p>Пошаговое руководство</p>
+                            </div>
+                        </button>
+                        
+                        <button class="info-item" data-info="safety">
+                            <span>⚠️</span>
+                            <div>
+                                <h3>Требования безопасности</h3>
+                                <p>Правила и требования</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Contacts Section -->
+                <div id="contacts" class="content-section">
+                    <button class="back-btn" data-target="dashboard">← Назад</button>
+                    <h2>Контакты</h2>
+                    
+                    <div id="contacts-list" class="contacts-list">
+                        <!-- Contacts will be loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- History Section -->
+                <div id="history" class="content-section">
+                    <button class="back-btn" data-target="dashboard">← Назад</button>
+                    <h2>История допусков</h2>
+                    
+                    <div id="history-list" class="history-list">
+                        <!-- History will be loaded dynamically -->
+                    </div>
+                </div>
+
+            </main>
+        </div>
+
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- JavaScript -->
+    <script src="/js/utils.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/permit.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>

@@ -34,7 +34,8 @@ class PermitManager {
                 this.updatePermitStatus();
                 
                 if (result.status === 'pending') {
-                    this.loadPermitChecklist();
+                    // Permit checklist will be loaded when permit section is shown
+                    console.log('Pending permit found, checklist will load when section is viewed');
                 }
                 
                 return result.permit;
@@ -263,7 +264,7 @@ class PermitManager {
     async updateChecklist(key, checked) {
         try {
             const updateData = { [key]: checked };
-            const result = await api.updateChecklist(updateData);
+            const result = await window.api.updateChecklist(updateData);
             
             if (result.success) {
                 // Update local state
@@ -366,7 +367,7 @@ class PermitManager {
             }
 
             // Then submit permit
-            const result = await api.submitPermit();
+            const result = await window.api.submitPermit();
             
             if (result.success) {
                 showToast(result.message || 'Допуск получен!', 'success');
@@ -394,7 +395,7 @@ class PermitManager {
             formData.append(type, file);
         });
 
-        const result = await api.uploadPhotos(formData);
+        const result = await window.api.uploadPhotos(formData);
         
         if (result.success) {
             // Clear uploaded photos cache

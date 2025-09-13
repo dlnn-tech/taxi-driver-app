@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Auth Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Test Authentication Page</h1>
+            
+            <div class="box">
+                <h2 class="subtitle">1. Test Health Check</h2>
+                <button class="button is-info" onclick="testHealth()">Test Health</button>
+                <pre id="health-result"></pre>
+            </div>
+            
+            <div class="box">
+                <h2 class="subtitle">2. Test Simple SMS Request</h2>
+                <button class="button is-primary" onclick="testSimpleSMS()">Request SMS for Test Phone</button>
+                <pre id="sms-result"></pre>
+            </div>
+            
+            <div class="box">
+                <h2 class="subtitle">3. Test Simple Login</h2>
+                <button class="button is-success" onclick="testSimpleLogin()">Login with Test Credentials</button>
+                <pre id="login-result"></pre>
+            </div>
+            
+            <div class="box">
+                <h2 class="subtitle">4. Test Regular Auth Flow</h2>
+                <button class="button is-warning" onclick="testRegularAuth()">Test Regular Auth</button>
+                <pre id="regular-result"></pre>
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        async function testHealth() {
+            const result = document.getElementById('health-result');
+            try {
+                const response = await fetch('/api/health');
+                const data = await response.json();
+                result.textContent = JSON.stringify(data, null, 2);
+                result.style.color = 'green';
+            } catch (error) {
+                result.textContent = 'Error: ' + error.message;
+                result.style.color = 'red';
+            }
+        }
+        
+        async function testSimpleSMS() {
+            const result = document.getElementById('sms-result');
+            try {
+                const response = await fetch('/api/auth-simple/test-sms', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: '+79991234567' })
+                });
+                const data = await response.json();
+                result.textContent = JSON.stringify(data, null, 2);
+                result.style.color = response.ok ? 'green' : 'orange';
+            } catch (error) {
+                result.textContent = 'Error: ' + error.message;
+                result.style.color = 'red';
+            }
+        }
+        
+        async function testSimpleLogin() {
+            const result = document.getElementById('login-result');
+            try {
+                const response = await fetch('/api/auth-simple/test-login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        phone: '+79991234567',
+                        code: '1234'
+                    })
+                });
+                const data = await response.json();
+                result.textContent = JSON.stringify(data, null, 2);
+                result.style.color = response.ok ? 'green' : 'orange';
+                
+                if (data.token) {
+                    localStorage.setItem('testToken', data.token);
+                    result.textContent += '\n\nToken saved to localStorage!';
+                }
+            } catch (error) {
+                result.textContent = 'Error: ' + error.message;
+                result.style.color = 'red';
+            }
+        }
+        
+        async function testRegularAuth() {
+            const result = document.getElementById('regular-result');
+            try {
+                // First request SMS
+                result.textContent = 'Requesting SMS...\n';
+                const smsResponse = await fetch('/api/auth/request-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: '+79991234567' })
+                });
+                const smsData = await smsResponse.json();
+                result.textContent += 'SMS Response: ' + JSON.stringify(smsData, null, 2) + '\n\n';
+                
+                if (smsResponse.ok) {
+                    // Then verify code
+                    result.textContent += 'Verifying code...\n';
+                    const verifyResponse = await fetch('/api/auth/verify-code', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            phone: '+79991234567',
+                            code: '1234'
+                        })
+                    });
+                    const verifyData = await verifyResponse.json();
+                    result.textContent += 'Verify Response: ' + JSON.stringify(verifyData, null, 2);
+                    result.style.color = verifyResponse.ok ? 'green' : 'orange';
+                } else {
+                    result.style.color = 'orange';
+                }
+            } catch (error) {
+                result.textContent += '\nError: ' + error.message;
+                result.style.color = 'red';
+            }
+        }
+    </script>
+</body>
+</html>

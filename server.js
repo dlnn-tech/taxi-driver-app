@@ -8,6 +8,7 @@ require('dotenv').config();
 
 const db = require('./config/database');
 const authRoutes = require('./routes/auth');
+const authSimpleRoutes = require('./routes/authSimple');
 const permitRoutes = require('./routes/permit');
 const infoRoutes = require('./routes/info');
 const contactRoutes = require('./routes/contact');
@@ -61,8 +62,19 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.json({
+        success: true,
+        status: 'OK',
+        environment: process.env.NODE_ENV || 'not set',
+        timestamp: new Date().toISOString()
+    });
+});
+
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/auth-simple', authSimpleRoutes); // Simple auth for testing
 app.use('/api/permit', permitRoutes);
 app.use('/api/info', infoRoutes);
 app.use('/api/contact', contactRoutes);

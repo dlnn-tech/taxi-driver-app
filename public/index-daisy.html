@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="corporate">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Такси - Приложение для водителей</title>
+    
+    <!-- Meta tags for mobile -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    
+    <!-- Tailwind CSS + DaisyUI -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.24/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            daisyui: {
+                themes: ["light", "dark", "corporate", "business"],
+            },
+        }
+    </script>
+    
+    <style>
+        /* Custom animations */
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        /* Loading animation */
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-base-200">
+    
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-base-100">
+        <div class="text-center">
+            <div class="loading loading-spinner loading-lg text-primary"></div>
+            <p class="mt-4 text-lg font-medium">Загрузка<span class="loading-dots"></span></p>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="min-h-screen" style="display: none;">
+        
+        <!-- Authentication Screen -->
+        <div id="auth-screen" class="hero min-h-screen bg-gradient-to-br from-primary to-primary-focus">
+            <div class="hero-content flex-col">
+                <!-- Logo Section -->
+                <div class="text-center mb-8 text-white">
+                    <div class="mb-4">
+                        <i class="fas fa-taxi text-6xl"></i>
+                    </div>
+                    <h1 class="text-5xl font-bold mb-2">Такси</h1>
+                    <p class="text-xl opacity-90">Приложение для водителей</p>
+                </div>
+
+                <!-- Phone Input Step -->
+                <div id="phone-step" class="card w-full max-w-md bg-base-100 shadow-2xl">
+                    <div class="card-body">
+                        <h2 class="card-title text-2xl mb-2">Войти в приложение</h2>
+                        <p class="text-base-content/70 mb-6">Введите номер телефона</p>
+                        
+                        <form id="phone-form">
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Номер телефона</span>
+                                </label>
+                                <input type="tel" id="phone" 
+                                       class="input input-bordered input-lg" 
+                                       placeholder="+7 (999) 999-99-99" 
+                                       required>
+                            </div>
+                            
+                            <div class="form-control mt-6">
+                                <button type="submit" class="btn btn-primary btn-lg" disabled>
+                                    <span class="btn-text">Получить код</span>
+                                    <span class="btn-loader hidden">
+                                        <span class="loading loading-spinner loading-sm"></span>
+                                    </span>
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <!-- Demo Info -->
+                        <div class="alert alert-info mt-6">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                <h3 class="font-bold">Демо-доступ:</h3>
+                                <p class="text-sm">Телефон: <kbd class="kbd kbd-sm">+79991234567</kbd></p>
+                                <p class="text-sm">Код: <kbd class="kbd kbd-sm">1234</kbd></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SMS Code Step -->
+                <div id="code-step" class="card w-full max-w-md bg-base-100 shadow-2xl" style="display: none;">
+                    <div class="card-body">
+                        <h2 class="card-title text-2xl mb-2">Подтверждение</h2>
+                        <p class="text-base-content/70 mb-6">Введите код из SMS</p>
+                        
+                        <form id="code-form">
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Код подтверждения</span>
+                                </label>
+                                <input type="text" id="code" 
+                                       class="input input-bordered input-lg text-center text-2xl tracking-widest" 
+                                       placeholder="0000" 
+                                       maxlength="4" 
+                                       required>
+                            </div>
+                            
+                            <div class="form-control mt-6">
+                                <button type="submit" class="btn btn-primary btn-lg" disabled>
+                                    <span class="btn-text">Войти</span>
+                                    <span class="btn-loader hidden">
+                                        <span class="loading loading-spinner loading-sm"></span>
+                                    </span>
+                                </button>
+                            </div>
+                            
+                            <div class="form-control mt-4">
+                                <button type="button" id="back-to-phone" class="btn btn-ghost">
+                                    <i class="fas fa-arrow-left mr-2"></i> Изменить номер
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App Screen -->
+        <div id="main-screen" class="min-h-screen bg-base-200" style="display: none;">
+            
+            <!-- Navigation Bar -->
+            <div class="navbar bg-base-100 shadow-lg">
+                <div class="navbar-start">
+                    <div class="dropdown">
+                        <label tabindex="0" class="btn btn-ghost lg:hidden">
+                            <i class="fas fa-bars text-xl"></i>
+                        </label>
+                        <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                            <li><a class="nav-item" data-section="dashboard"><i class="fas fa-home mr-2"></i> Главная</a></li>
+                            <li><a class="nav-item" data-section="permit"><i class="fas fa-clipboard-check mr-2"></i> Допуск</a></li>
+                            <li><a class="nav-item" data-section="history"><i class="fas fa-history mr-2"></i> История</a></li>
+                            <li><a class="nav-item" data-section="info"><i class="fas fa-info-circle mr-2"></i> Информация</a></li>
+                            <li><a class="nav-item" data-section="contacts"><i class="fas fa-phone mr-2"></i> Контакты</a></li>
+                        </ul>
+                    </div>
+                    <a class="btn btn-ghost text-xl">
+                        <i class="fas fa-taxi mr-2"></i>
+                        <span id="screen-title">Главная</span>
+                    </a>
+                </div>
+                
+                <div class="navbar-center hidden lg:flex">
+                    <ul class="menu menu-horizontal px-1">
+                        <li><a class="nav-item" data-section="dashboard"><i class="fas fa-home mr-2"></i> Главная</a></li>
+                        <li><a class="nav-item" data-section="permit"><i class="fas fa-clipboard-check mr-2"></i> Допуск</a></li>
+                        <li><a class="nav-item" data-section="history"><i class="fas fa-history mr-2"></i> История</a></li>
+                        <li><a class="nav-item" data-section="info"><i class="fas fa-info-circle mr-2"></i> Информация</a></li>
+                        <li><a class="nav-item" data-section="contacts"><i class="fas fa-phone mr-2"></i> Контакты</a></li>
+                    </ul>
+                </div>
+                
+                <div class="navbar-end">
+                    <div class="dropdown dropdown-end">
+                        <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+                            <div class="w-10 rounded-full bg-primary text-primary-content">
+                                <span class="text-xl flex items-center justify-center h-full">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                            </div>
+                        </label>
+                        <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                            <li><a id="profile-btn"><i class="fas fa-user mr-2"></i> Профиль</a></li>
+                            <li><a id="theme-toggle"><i class="fas fa-palette mr-2"></i> Сменить тему</a></li>
+                            <li class="text-error"><a id="logout-btn"><i class="fas fa-sign-out-alt mr-2"></i> Выйти</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Container -->
+            <div class="container mx-auto px-4 py-6">
+                
+                <!-- Dashboard Section -->
+                <div id="dashboard" class="content-section">
+                    
+                    <!-- Status Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <!-- Order Status Card -->
+                        <div class="card bg-base-100 shadow-xl">
+                            <div class="card-body">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h2 class="card-title">
+                                            <i class="fas fa-taxi text-primary"></i>
+                                            Статус заказов
+                                        </h2>
+                                        <div id="order-status-indicator" class="mt-2">
+                                            <div class="badge badge-warning gap-2">
+                                                <span class="loading loading-spinner loading-xs"></span>
+                                                Проверка...
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="radial-progress text-primary" style="--value:70; --size:4rem;">70%</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Permit Status Card -->
+                        <div class="card bg-base-100 shadow-xl">
+                            <div class="card-body">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h2 class="card-title">
+                                            <i class="fas fa-clipboard-check text-success"></i>
+                                            Статус допуска
+                                        </h2>
+                                        <div id="permit-indicator" class="mt-2">
+                                            <div class="badge badge-ghost gap-2">
+                                                <span class="loading loading-spinner loading-xs"></span>
+                                                Загрузка...
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-circle btn-primary">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stats -->
+                    <div class="stats shadow w-full mb-6">
+                        <div class="stat">
+                            <div class="stat-figure text-primary">
+                                <i class="fas fa-car text-3xl"></i>
+                            </div>
+                            <div class="stat-title">Автомобиль</div>
+                            <div class="stat-value text-primary">А123БВ77</div>
+                            <div class="stat-desc">Hyundai Solaris</div>
+                        </div>
+                        
+                        <div class="stat">
+                            <div class="stat-figure text-secondary">
+                                <i class="fas fa-clock text-3xl"></i>
+                            </div>
+                            <div class="stat-title">Время работы</div>
+                            <div class="stat-value text-secondary">8ч 45м</div>
+                            <div class="stat-desc">Сегодня</div>
+                        </div>
+                        
+                        <div class="stat">
+                            <div class="stat-figure text-success">
+                                <i class="fas fa-check-circle text-3xl"></i>
+                            </div>
+                            <div class="stat-title">Статус</div>
+                            <div class="stat-value text-success">Активен</div>
+                            <div class="stat-desc">Все проверки пройдены</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h2 class="card-title mb-4">Быстрые действия</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <button id="submit-data-btn" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-paper-plane mr-2"></i>
+                                    Отправить данные
+                                </button>
+                                <button class="btn btn-secondary btn-lg nav-item" data-section="permit">
+                                    <i class="fas fa-clipboard-list mr-2"></i>
+                                    Получить допуск
+                                </button>
+                                <button class="btn btn-accent btn-lg nav-item" data-section="history">
+                                    <i class="fas fa-history mr-2"></i>
+                                    История
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Permit Section -->
+                <div id="permit" class="content-section" style="display: none;">
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h2 class="card-title text-2xl mb-4">
+                                <i class="fas fa-clipboard-check mr-2"></i>
+                                Получение допуска
+                            </h2>
+                            <div id="permit-content-container">
+                                <!-- Permit content will be loaded dynamically -->
+                                <div class="text-center py-8">
+                                    <span class="loading loading-spinner loading-lg"></span>
+                                    <p class="mt-4">Загрузка информации о допуске...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Section -->
+                <div id="history" class="content-section" style="display: none;">
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h2 class="card-title text-2xl mb-4">
+                                <i class="fas fa-history mr-2"></i>
+                                История допусков
+                            </h2>
+                            <div id="history-list">
+                                <!-- History will be loaded dynamically -->
+                                <div class="text-center py-8">
+                                    <span class="loading loading-spinner loading-lg"></span>
+                                    <p class="mt-4">Загрузка истории...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Section -->
+                <div id="info" class="content-section" style="display: none;">
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h2 class="card-title text-2xl mb-4">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Полезная информация
+                            </h2>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="card bg-base-200 cursor-pointer hover:shadow-lg transition-shadow info-item" data-info="faq">
+                                    <div class="card-body items-center text-center">
+                                        <i class="fas fa-question-circle text-4xl text-warning mb-2"></i>
+                                        <h3 class="card-title">FAQ</h3>
+                                        <p>Ответы на частые вопросы</p>
+                                    </div>
+                                </div>
+                                <div class="card bg-base-200 cursor-pointer hover:shadow-lg transition-shadow info-item" data-info="instructions">
+                                    <div class="card-body items-center text-center">
+                                        <i class="fas fa-book text-4xl text-info mb-2"></i>
+                                        <h3 class="card-title">Инструкции</h3>
+                                        <p>Пошаговые руководства</p>
+                                    </div>
+                                </div>
+                                <div class="card bg-base-200 cursor-pointer hover:shadow-lg transition-shadow info-item" data-info="safety">
+                                    <div class="card-body items-center text-center">
+                                        <i class="fas fa-shield-alt text-4xl text-error mb-2"></i>
+                                        <h3 class="card-title">Безопасность</h3>
+                                        <p>Правила и требования</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contacts Section -->
+                <div id="contacts" class="content-section" style="display: none;">
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h2 class="card-title text-2xl mb-4">
+                                <i class="fas fa-phone mr-2"></i>
+                                Контакты
+                            </h2>
+                            <div id="contacts-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Contacts will be loaded dynamically -->
+                                <div class="text-center py-8 col-span-full">
+                                    <span class="loading loading-spinner loading-lg"></span>
+                                    <p class="mt-4">Загрузка контактов...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast toast-end"></div>
+
+    <!-- JavaScript Files -->
+    <script src="/js/storage.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/utils.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/permit.js"></script>
+    <script src="/js/app-daisy.js"></script>
+    
+    <!-- Initialize all objects -->
+    <script src="/js/init.js"></script>
+</body>
+</html>
